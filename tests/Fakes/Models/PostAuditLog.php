@@ -1,8 +1,8 @@
 <?php
 
-namespace OrisIntel\AuditLog\Tests\Fakes\Models;
+namespace AlwaysOpen\AuditLog\Tests\Fakes\Models;
 
-use OrisIntel\AuditLog\Models\BaseModel;
+use AlwaysOpen\AuditLog\Models\BaseModel;
 
 class PostAuditLog extends BaseModel
 {

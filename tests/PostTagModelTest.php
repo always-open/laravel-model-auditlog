@@ -1,13 +1,13 @@
 <?php
 
-namespace OrisIntel\AuditLog\Tests;
+namespace AlwaysOpen\AuditLog\Tests;
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use OrisIntel\AuditLog\EventType;
-use OrisIntel\AuditLog\Tests\Fakes\Models\Post;
-use OrisIntel\AuditLog\Tests\Fakes\Models\PostTag;
-use OrisIntel\AuditLog\Tests\Fakes\Models\PostTagAuditLog;
-use OrisIntel\AuditLog\Tests\Fakes\Models\Tag;
+use AlwaysOpen\AuditLog\EventType;
+use AlwaysOpen\AuditLog\Tests\Fakes\Models\Post;
+use AlwaysOpen\AuditLog\Tests\Fakes\Models\PostTag;
+use AlwaysOpen\AuditLog\Tests\Fakes\Models\PostTagAuditLog;
+use AlwaysOpen\AuditLog\Tests\Fakes\Models\Tag;
 
 class PostTagModelTest extends TestCase
 {

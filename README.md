@@ -1,8 +1,8 @@
 # Laravel Model Auditlog
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/orisintel/laravel-model-auditlog.svg?style=flat-square)](https://packagist.org/packages/orisintel/laravel-model-auditlog)
-[![Build Status](https://img.shields.io/github/workflow/status/orisintel/laravel-model-auditlog/tests?style=flat-square)](https://github.com/orisintel/laravel-model-auditlog/actions?query=workflow%3Atests)
-[![Total Downloads](https://img.shields.io/packagist/dt/orisintel/laravel-model-auditlog.svg?style=flat-square)](https://packagist.org/packages/orisintel/laravel-model-auditlog)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/always-open/laravel-model-auditlog.svg?style=flat-square)](https://packagist.org/packages/always-open/laravel-model-auditlog)
+[![Build Status](https://img.shields.io/github/workflow/status/always-open/laravel-model-auditlog/tests?style=flat-square)](https://github.com/always-open/laravel-model-auditlog/actions?query=workflow%3Atests)
+[![Total Downloads](https://img.shields.io/packagist/dt/always-open/laravel-model-auditlog.svg?style=flat-square)](https://packagist.org/packages/always-open/laravel-model-auditlog)
 
 When modifying a model record, it is nice to have a log of the changes made and who made those changes. There are many packages around this already, but this one is different in that it logs those changes to individual tables for performance and supports real foreign keys.
 
@@ -11,13 +11,13 @@ When modifying a model record, it is nice to have a log of the changes made and 
 You can install the package via composer:
 
 ```bash
-composer require orisintel/laravel-model-auditlog
+composer require always-open/laravel-model-auditlog
 ```
 
 ## Configuration
 
 ``` php
-php artisan vendor:publish --provider="\OrisIntel\AuditLog\AuditLogServiceProvider"
+php artisan vendor:publish --provider="\AlwaysOpen\AuditLog\AuditLogServiceProvider"
 ```
 
 Running the above command will publish the config file.
@@ -30,7 +30,7 @@ After adding the proper fields to your table, add the trait to your model.
 // User model
 class User extends Model
 {
-    use \OrisIntel\AuditLog\Traits\AuditLoggable;
+    use \AlwaysOpen\AuditLog\Traits\AuditLoggable;
 
 ```
 
@@ -147,7 +147,7 @@ composer require awobaz/compoships
 Then use the trait on the pivot audit log model:
 ```php
 use Awobaz\Compoships\Compoships;
-use OrisIntel\AuditLog\Models\BaseModel;
+use AlwaysOpen\AuditLog\Models\BaseModel;
 
 class PostTagAuditLog extends BaseModel
 {
@@ -190,7 +190,7 @@ Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
 
 ### Security
 
-If you discover any security related issues, please email [security@orisintel.com](mailto:security@orisintel.com) instead of using the issue tracker.
+If you discover any security related issues, please email @tomschlick / @qschmick instead of using the issue tracker.
 
 ## Credits
 

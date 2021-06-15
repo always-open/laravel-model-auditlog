@@ -1,6 +1,6 @@
 <?php
 
-namespace OrisIntel\AuditLog\Tests;
+namespace AlwaysOpen\AuditLog\Tests;
 
 use Illuminate\Support\Facades\Schema;
 

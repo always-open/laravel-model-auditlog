@@ -1,14 +1,14 @@
 <?php
 
-namespace OrisIntel\AuditLog\Tests;
+namespace AlwaysOpen\AuditLog\Tests;
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Collection;
-use OrisIntel\AuditLog\EventType;
-use OrisIntel\AuditLog\Tests\Fakes\Models\IgnoredFieldsPost;
-use OrisIntel\AuditLog\Tests\Fakes\Models\NonSoftDeletePost;
-use OrisIntel\AuditLog\Tests\Fakes\Models\Post;
-use OrisIntel\AuditLog\Tests\Fakes\Models\PostAuditLog;
+use AlwaysOpen\AuditLog\EventType;
+use AlwaysOpen\AuditLog\Tests\Fakes\Models\IgnoredFieldsPost;
+use AlwaysOpen\AuditLog\Tests\Fakes\Models\NonSoftDeletePost;
+use AlwaysOpen\AuditLog\Tests\Fakes\Models\Post;
+use AlwaysOpen\AuditLog\Tests\Fakes\Models\PostAuditLog;
 
 class PostModelTest extends TestCase
 {

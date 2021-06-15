@@ -1,9 +1,9 @@
 <?php
 
-namespace OrisIntel\AuditLog\Tests\Fakes\Models;
+namespace AlwaysOpen\AuditLog\Tests\Fakes\Models;
 
 use Illuminate\Database\Eloquent\Relations\Pivot;
-use OrisIntel\AuditLog\Traits\AuditLoggablePivot;
+use AlwaysOpen\AuditLog\Traits\AuditLoggablePivot;
 
 class PostTag extends Pivot
 {

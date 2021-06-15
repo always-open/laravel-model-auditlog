@@ -1,9 +1,9 @@
 <?php
 
-namespace OrisIntel\AuditLog\Observers;
+namespace AlwaysOpen\AuditLog\Observers;
 
 use Illuminate\Database\Eloquent\Model;
-use OrisIntel\AuditLog\EventType;
+use AlwaysOpen\AuditLog\EventType;
 
 class AuditLogObserver
 {
