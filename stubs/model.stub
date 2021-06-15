@@ -2,7 +2,7 @@
 
 namespace {NAMESPACE};
 
-use OrisIntel\AuditLog\Models\BaseModel;
+use AlwaysOpen\AuditLog\Models\BaseModel;
 
 class {CLASS_NAME} extends BaseModel
 {

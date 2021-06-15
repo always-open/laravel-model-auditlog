@@ -1,33 +1,20 @@
 {
-    "name": "orisintel/laravel-model-auditlog",
+    "name": "always-open/laravel-model-auditlog",
     "description": "Tracks changes made to models and logs them to individual tables. ",
     "keywords": [
-        "orisintel",
+        "always-open",
         "auditlog",
         "laravel",
         "logging"
     ],
-    "homepage": "https://github.com/orisintel/laravel-model-auditlog",
+    "homepage": "https://github.com/always-open/laravel-model-auditlog",
     "license": "MIT",
-    "authors": [
-        {
-            "name": "Tom Schlick",
-            "email": "tschlick@orisintel.com",
-            "role": "Developer"
-        },
-        {
-            "name": "ORIS Intelligence",
-            "email": "developers@orisintel.com",
-            "homepage": "https://orisintel.com",
-            "role": "Organization"
-        }
-    ],
     "require": {
         "php": "^7.3|^8.0",
         "awobaz/compoships": "^2.0.3",
         "fico7489/laravel-pivot": "^3.0.1",
         "laravel/framework": "^8.0",
-        "orisintel/laravel-process-stamps": "^3.0"
+        "always-open/laravel-process-stamps": "^3.0"
     },
     "require-dev": {
         "doctrine/dbal": "^2.9",
@@ -38,12 +25,12 @@
     },
     "autoload": {
         "psr-4": {
-            "OrisIntel\\AuditLog\\": "src"
+            "AlwaysOpen\\AuditLog\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "OrisIntel\\AuditLog\\Tests\\": "tests"
+            "AlwaysOpen\\AuditLog\\Tests\\": "tests"
         }
     },
     "scripts": {
@@ -56,7 +43,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "OrisIntel\\AuditLog\\AuditLogServiceProvider"
+                "AlwaysOpen\\AuditLog\\AuditLogServiceProvider"
             ]
         }
     }

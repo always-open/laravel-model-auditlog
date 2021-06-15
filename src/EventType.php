@@ -1,6 +1,6 @@
 <?php
 
-namespace OrisIntel\AuditLog;
+namespace AlwaysOpen\AuditLog;
 
 class EventType
 {

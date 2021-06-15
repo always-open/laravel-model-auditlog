@@ -1,9 +1,9 @@
 <?php
 
-namespace OrisIntel\AuditLog;
+namespace AlwaysOpen\AuditLog;
 
 use Illuminate\Support\ServiceProvider;
-use OrisIntel\AuditLog\Console\Commands\MakeModelAuditLogTable;
+use AlwaysOpen\AuditLog\Console\Commands\MakeModelAuditLogTable;
 
 class AuditLogServiceProvider extends ServiceProvider
 {

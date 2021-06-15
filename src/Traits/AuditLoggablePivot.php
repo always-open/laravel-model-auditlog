@@ -1,6 +1,6 @@
 <?php
 
-namespace OrisIntel\AuditLog\Traits;
+namespace AlwaysOpen\AuditLog\Traits;
 
 use Awobaz\Compoships\Compoships;
 use Illuminate\Database\Eloquent\Relations\HasMany;

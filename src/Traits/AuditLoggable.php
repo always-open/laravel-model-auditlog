@@ -1,9 +1,9 @@
 <?php
 
-namespace OrisIntel\AuditLog\Traits;
+namespace AlwaysOpen\AuditLog\Traits;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use OrisIntel\AuditLog\Observers\AuditLogObserver;
+use AlwaysOpen\AuditLog\Observers\AuditLogObserver;
 
 trait AuditLoggable
 {

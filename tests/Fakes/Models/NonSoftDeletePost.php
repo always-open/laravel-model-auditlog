@@ -1,9 +1,9 @@
 <?php
 
-namespace OrisIntel\AuditLog\Tests\Fakes\Models;
+namespace AlwaysOpen\AuditLog\Tests\Fakes\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use OrisIntel\AuditLog\Traits\AuditLoggable;
+use AlwaysOpen\AuditLog\Traits\AuditLoggable;
 
 class NonSoftDeletePost extends Model
 {

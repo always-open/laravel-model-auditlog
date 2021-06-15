@@ -1,12 +1,12 @@
 <?php
 
-namespace OrisIntel\AuditLog\Models;
+namespace AlwaysOpen\AuditLog\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
-use OrisIntel\AuditLog\EventType;
+use AlwaysOpen\AuditLog\EventType;
 
 /**
  * @property int event_type

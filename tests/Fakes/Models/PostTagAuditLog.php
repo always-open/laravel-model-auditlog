@@ -1,9 +1,9 @@
 <?php
 
-namespace OrisIntel\AuditLog\Tests\Fakes\Models;
+namespace AlwaysOpen\AuditLog\Tests\Fakes\Models;
 
 use Awobaz\Compoships\Compoships;
-use OrisIntel\AuditLog\Models\BaseModel;
+use AlwaysOpen\AuditLog\Models\BaseModel;
 
 class PostTagAuditLog extends BaseModel
 {

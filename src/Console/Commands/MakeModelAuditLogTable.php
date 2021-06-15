@@ -1,6 +1,6 @@
 <?php
 
-namespace OrisIntel\AuditLog\Console\Commands;
+namespace AlwaysOpen\AuditLog\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Model;

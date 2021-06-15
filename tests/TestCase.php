@@ -1,9 +1,9 @@
 <?php
 
-namespace OrisIntel\AuditLog\Tests;
+namespace AlwaysOpen\AuditLog\Tests;
 
 use Orchestra\Testbench\TestCase as Orchestra;
-use OrisIntel\AuditLog\AuditLogServiceProvider;
+use AlwaysOpen\AuditLog\AuditLogServiceProvider;
 
 abstract class TestCase extends Orchestra
 {
