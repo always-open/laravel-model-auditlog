@@ -3,6 +3,7 @@
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/always-open/laravel-model-auditlog.svg?style=flat-square)](https://packagist.org/packages/always-open/laravel-model-auditlog)
 [![Build Status](https://img.shields.io/github/workflow/status/always-open/laravel-model-auditlog/tests?style=flat-square)](https://github.com/always-open/laravel-model-auditlog/actions?query=workflow%3Atests)
 [![Total Downloads](https://img.shields.io/packagist/dt/always-open/laravel-model-auditlog.svg?style=flat-square)](https://packagist.org/packages/always-open/laravel-model-auditlog)
+[![Maintainability](https://api.codeclimate.com/v1/badges/67a16a2e16e938f73304/maintainability)](https://codeclimate.com/github/always-open/laravel-model-auditlog/maintainability)
 
 When modifying a model record, it is nice to have a log of the changes made and who made those changes. There are many packages around this already, but this one is different in that it logs those changes to individual tables for performance and supports real foreign keys.
 
