@@ -15,6 +15,14 @@ use AlwaysOpen\AuditLog\EventType;
  */
 abstract class BaseModel extends Model
 {
+    public $dates = [
+        self::CREATED_AT,
+        self::CREATED_AT,
+        'occurred_at',
+    ];
+
+    protected $dateFormat = 'Y-m-d H:i:s.u';
+
     /**
      * Record the change in the appropriate audit log table.
      *
