@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use ReflectionClass;
+use ReflectionException;
 
 class MakeModelAuditLogTable extends Command
 {
@@ -15,7 +16,7 @@ class MakeModelAuditLogTable extends Command
      *
      * @var string
      */
-    protected $signature = 'make:model-auditlog 
+    protected $signature = 'make:model-auditlog
                                 {existing-model-class : Define which model this auditlog should extend.}
                             ';
 
@@ -53,47 +54,28 @@ class MakeModelAuditLogTable extends Command
         $this->createModel($subject_model, $config);
     }
 
-    /**
-     * @param Model $subject_model
-     * @param array $config
-     *
-     * @return string
-     */
-    public function generateAuditTableName($subject_model, array $config): string
+    public function generateAuditTableName(Model $subject_model, array $config): string
     {
         return $subject_model->getTable() . $config['table_suffix'];
     }
 
-    /**
-     * @param Model $subject_model
-     * @param array $config
-     *
-     * @return string
-     */
-    public function generateAuditModelName($subject_model, array $config): string
+    public function generateAuditModelName(Model $subject_model, array $config): string
     {
         return class_basename($subject_model) . $config['model_suffix'];
     }
 
     /**
-     * @param Model $subject_model
-     *
-     * @throws \ReflectionException
-     *
-     * @return string
+     * @throws ReflectionException
      */
-    public function getModelNamespace($subject_model): string
+    public function getModelNamespace(Model $subject_model): string
     {
         return (new ReflectionClass($subject_model))->getNamespaceName();
     }
 
     /**
-     * @param Model $subject_model
-     * @param array $config
-     *
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
-    public function createModel($subject_model, array $config): void
+    public function createModel(Model $subject_model, array $config): void
     {
         $modelname = $this->generateAuditModelName($subject_model, $config);
 
@@ -110,14 +92,11 @@ class MakeModelAuditLogTable extends Command
         }
     }
 
-    /**
-     * @param Model $subject_model
-     * @param array $config
-     */
-    public function createMigration($subject_model, array $config): void
+    public function createMigration(Model $subject_model, array $config): void
     {
         $tablename = $this->generateAuditTableName($subject_model, $config);
         $fileslug = "create_{$tablename}_table";
+
 
         $stub = $this->getStubWithReplacements($config['migration_stub'], [
             '{TABLE_NAME}'          => $tablename,
@@ -125,6 +104,7 @@ class MakeModelAuditLogTable extends Command
             '{PROCESS_IDS_SETUP}'   => $this->generateMigrationProcessStamps($config),
             '{FOREIGN_KEY_SUBJECT}' => $this->generateMigrationSubjectForeignKeys($subject_model, $config),
             '{FOREIGN_KEY_USER}'    => $this->generateMigrationUserForeignKeys($config),
+            '{PRECISION}'           => $this->generatePrecisionValue($config),
         ]);
 
         $filename = $config['migration_path'] . DIRECTORY_SEPARATOR . $this->generateMigrationFilename($fileslug);
@@ -134,32 +114,16 @@ class MakeModelAuditLogTable extends Command
         }
     }
 
-    /**
-     * @param string $fileslug
-     *
-     * @return string
-     */
     public function generateMigrationFilename(string $fileslug): string
     {
         return Str::snake(Str::lower(date('Y_m_d_His') . ' ' . $fileslug . '.php'));
     }
 
-    /**
-     * @param string $fileslug
-     *
-     * @return string
-     */
     public function generateMigrationClassname(string $fileslug): string
     {
         return Str::studly($fileslug);
     }
 
-    /**
-     * @param string $file
-     * @param array  $replacements
-     *
-     * @return string
-     */
     public function getStubWithReplacements(string $file, array $replacements): string
     {
         return str_replace(
@@ -169,13 +133,7 @@ class MakeModelAuditLogTable extends Command
         );
     }
 
-    /**
-     * @param Model $subject_model
-     * @param array $config
-     *
-     * @return string
-     */
-    public function generateMigrationSubjectForeignKeys($subject_model, array $config): string
+    public function generateMigrationSubjectForeignKeys(Model $subject_model, array $config): string
     {
         if (Arr::get($config, 'enable_subject_foreign_keys') === true) {
             return '$table->foreign(\'subject_id\')
@@ -186,11 +144,6 @@ class MakeModelAuditLogTable extends Command
         return '';
     }
 
-    /**
-     * @param array $config
-     *
-     * @return string
-     */
     public function generateMigrationUserForeignKeys(array $config): string
     {
         $user_model = new $config['user_model']();
@@ -206,11 +159,6 @@ class MakeModelAuditLogTable extends Command
         return '';
     }
 
-    /**
-     * @param array $config
-     *
-     * @return string
-     */
     public function generateMigrationProcessStamps(array $config): string
     {
         if (Arr::get($config, 'enable_process_stamps') === true) {
@@ -218,5 +166,10 @@ class MakeModelAuditLogTable extends Command
         }
 
         return '';
+    }
+
+    public function generatePrecisionValue(array $config): string
+    {
+        return (string) Arr::get($config, 'log_timestamp_precision', 0) ?? 0;
     }
 }

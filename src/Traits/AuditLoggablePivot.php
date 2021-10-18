@@ -11,9 +11,7 @@ trait AuditLoggablePivot
     use Compoships;
 
     /**
-     * Returns audit_loggable_keys set on AuditLogModelInstance.
-     *
-     * @return array
+     * @note Returns audit_loggable_keys set on AuditLogModelInstance.
      */
     public function getAuditLogForeignKeyColumns(): array
     {
@@ -21,9 +19,7 @@ trait AuditLoggablePivot
     }
 
     /**
-     * Get the audit logs for this model.
-     *
-     * @return HasMany|null
+     * @note Get the audit logs for this model.
      */
     public function auditLogs(): ?HasMany
     {

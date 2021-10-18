@@ -7,17 +7,11 @@ use AlwaysOpen\AuditLog\Observers\AuditLogObserver;
 
 trait AuditLoggable
 {
-    /**
-     * Boots the trait and sets the observer.
-     */
     public static function bootAuditLoggable(): void
     {
         static::observe(AuditLogObserver::class);
     }
 
-    /**
-     * @return string
-     */
     public function getAuditLogModelName(): string
     {
         return get_class($this) . config('model-auditlog.model_suffix');
@@ -28,25 +22,20 @@ trait AuditLoggable
      *
      * @return mixed
      */
-    public function getAuditLogModelInstance()
+    public function getAuditLogModelInstance() : mixed
     {
         $class = $this->getAuditLogModelName();
 
         return new $class();
     }
 
-    /**
-     * @return string
-     */
     public function getAuditLogTableName(): string
     {
         return $this->getTable() . config('model-auditlog.table_suffix');
     }
 
     /**
-     * Get fields that should be ignored from the auditlog for this model.
-     *
-     * @return array
+     * @note Get fields that should be ignored from the auditlog for this model.
      */
     public function getAuditLogIgnoredFields(): array
     {
@@ -54,9 +43,7 @@ trait AuditLoggable
     }
 
     /**
-     * Get fields that should be used as keys on the auditlog for this model.
-     *
-     * @return array
+     * @note Get fields that should be used as keys on the auditlog for this model.
      */
     public function getAuditLogForeignKeyColumns(): array
     {
@@ -64,9 +51,7 @@ trait AuditLoggable
     }
 
     /**
-     * Get the columns used in the foreign key on the audit log table.
-     *
-     * @return array
+     * @note Get the columns used in the foreign key on the audit log table.
      */
     public function getAuditLogForeignKeyColumnKeys(): array
     {
@@ -74,9 +59,7 @@ trait AuditLoggable
     }
 
     /**
-     * Get the columns used in the unique index on the model table.
-     *
-     * @return array
+     * @note Get the columns used in the unique index on the model table.
      */
     public function getAuditLogForeignKeyColumnValues(): array
     {
@@ -84,9 +67,7 @@ trait AuditLoggable
     }
 
     /**
-     * Get the audit logs for this model.
-     *
-     * @return HasMany|null
+     * @note Get the audit logs for this model.
      */
     public function auditLogs(): ?HasMany
     {

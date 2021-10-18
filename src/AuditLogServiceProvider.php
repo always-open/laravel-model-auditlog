@@ -7,9 +7,6 @@ use AlwaysOpen\AuditLog\Console\Commands\MakeModelAuditLogTable;
 
 class AuditLogServiceProvider extends ServiceProvider
 {
-    /**
-     * Bootstrap the application services.
-     */
     public function boot()
     {
         if ($this->app->runningInConsole()) {
@@ -19,9 +16,6 @@ class AuditLogServiceProvider extends ServiceProvider
         }
     }
 
-    /**
-     * Register the application services.
-     */
     public function register()
     {
         $this->mergeConfigFrom(__DIR__.'/../config/model-auditlog.php', 'model-auditlog');
