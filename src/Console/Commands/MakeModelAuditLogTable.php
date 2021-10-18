@@ -15,7 +15,7 @@ class MakeModelAuditLogTable extends Command
      *
      * @var string
      */
-    protected $signature = 'make:model-auditlog 
+    protected $signature = 'make:model-auditlog
                                 {existing-model-class : Define which model this auditlog should extend.}
                             ';
 
@@ -125,6 +125,7 @@ class MakeModelAuditLogTable extends Command
             '{PROCESS_IDS_SETUP}'   => $this->generateMigrationProcessStamps($config),
             '{FOREIGN_KEY_SUBJECT}' => $this->generateMigrationSubjectForeignKeys($subject_model, $config),
             '{FOREIGN_KEY_USER}'    => $this->generateMigrationUserForeignKeys($config),
+            '{PRECISION}'           => $this->generatePrecisionValue($config),
         ]);
 
         $filename = $config['migration_path'] . DIRECTORY_SEPARATOR . $this->generateMigrationFilename($fileslug);
@@ -218,5 +219,10 @@ class MakeModelAuditLogTable extends Command
         }
 
         return '';
+    }
+
+    public function generatePrecisionValue(array $config): string
+    {
+        return (string) Arr::get($config, 'log_timestamp_precision', 0) ?? 0;
     }
 }
