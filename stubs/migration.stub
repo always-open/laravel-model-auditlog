@@ -14,7 +14,7 @@ class {CLASS_NAME} extends Migration
     public function up()
     {
         Schema::create('{TABLE_NAME}', function (Blueprint $table) {
-            $table->increments('id')->unsigned();
+            $table->id();
             $table->unsignedInteger('subject_id')->index();
             $table->unsignedInteger('user_id')->nullable()->index();
             $table->unsignedTinyInteger('event_type')->index();

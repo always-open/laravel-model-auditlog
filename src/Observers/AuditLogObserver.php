@@ -10,7 +10,7 @@ class AuditLogObserver
     /**
      * @param Model $model
      */
-    public function created($model): void
+    public function created(Model $model): void
     {
         $this->getAuditLogModel($model)
             ->recordChanges(EventType::CREATED, $model);
@@ -19,7 +19,7 @@ class AuditLogObserver
     /**
      * @param Model $model
      */
-    public function updated($model): void
+    public function updated(Model $model): void
     {
         $this->getAuditLogModel($model)
             ->recordChanges(EventType::UPDATED, $model);
@@ -28,7 +28,7 @@ class AuditLogObserver
     /**
      * @param Model $model
      */
-    public function deleted($model): void
+    public function deleted(Model $model): void
     {
         /*
          * If a model is hard deleting, either via a force delete or that model does not implement
@@ -45,7 +45,7 @@ class AuditLogObserver
     /**
      * @param Model $model
      */
-    public function restored($model): void
+    public function restored(Model $model): void
     {
         $this->getAuditLogModel($model)
             ->recordChanges(EventType::RESTORED, $model);
@@ -56,7 +56,7 @@ class AuditLogObserver
      * @param string $relationName
      * @param array  $pivotIds
      */
-    public function pivotDetached($model, string $relationName, array $pivotIds)
+    public function pivotDetached(Model $model, string $relationName, array $pivotIds)
     {
         $this->getAuditLogModel($model)
             ->recordPivotChanges(EventType::PIVOT_DELETED, $model, $relationName, $pivotIds);
@@ -70,7 +70,7 @@ class AuditLogObserver
      *
      * @return mixed
      */
-    protected function getAuditLogModel($model)
+    protected function getAuditLogModel(Model $model)
     {
         return $model->getAuditLogModelInstance();
     }
