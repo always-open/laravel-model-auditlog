@@ -15,10 +15,10 @@ use AlwaysOpen\AuditLog\EventType;
  */
 abstract class BaseModel extends Model
 {
-    public $dates = [
-        self::CREATED_AT,
-        self::CREATED_AT,
-        'occurred_at',
+    public $casts = [
+        self::CREATED_AT => 'datetime:Y-m-d H:i:s.u',
+        self::CREATED_AT => 'datetime:Y-m-d H:i:s.u',
+        'occurred_at'    => 'datetime:Y-m-d H:i:s.u',
     ];
 
     protected $dateFormat = 'Y-m-d H:i:s.u';
@@ -29,7 +29,7 @@ abstract class BaseModel extends Model
      * @param int   $event_type
      * @param Model $model
      */
-    public function recordChanges(int $event_type, $model): void
+    public function recordChanges(int $event_type, Model $model): void
     {
         $changes = self::getChangesByType($event_type, $model);
 
@@ -46,7 +46,7 @@ abstract class BaseModel extends Model
      *
      * @return Collection
      */
-    public function passingChanges(array $changes, $model): Collection
+    public function passingChanges(array $changes, Model $model): Collection
     {
         return collect($changes)
             ->except(config('model-auditlog.global_ignored_fields'))
@@ -65,7 +65,7 @@ abstract class BaseModel extends Model
      * @param int        $event_type
      * @param Model      $model
      */
-    public function saveChanges(Collection $passing_changes, int $event_type, $model): void
+    public function saveChanges(Collection $passing_changes, int $event_type, Model $model): void
     {
         $passing_changes
             ->each(function ($change, $key) use ($event_type, $model) {
@@ -98,7 +98,7 @@ abstract class BaseModel extends Model
      * @param string $relationName
      * @param array  $pivotIds
      */
-    public function recordPivotChanges(int $event_type, $model, string $relationName, array $pivotIds): void
+    public function recordPivotChanges(int $event_type, Model $model, string $relationName, array $pivotIds): void
     {
         $pivot = $model->{$relationName}()->getPivotClass();
 
@@ -120,7 +120,7 @@ abstract class BaseModel extends Model
      *
      * @return array
      */
-    public function getPivotChanges($pivot, $model, array $pivotIds): array
+    public function getPivotChanges($pivot, Model $model, array $pivotIds): array
     {
         $columns = (new $pivot())->getAuditLogForeignKeyColumns();
         $key = in_array($model->getForeignKey(), $columns) ? $model->getForeignKey() : $model->getKeyName();
@@ -146,11 +146,12 @@ abstract class BaseModel extends Model
      */
     public function savePivotChanges(Collection $passing_changes, int $event_type, $pivot): void
     {
+        $now = now();
         $passing_changes
-            ->each(function ($change, $key) use ($event_type, $passing_changes, $pivot) {
+            ->each(function ($change, $key) use ($event_type, $passing_changes, $pivot, $now) {
                 $log = $pivot->getAuditLogModelInstance();
                 $log->event_type = $event_type;
-                $log->occurred_at = now();
+                $log->occurred_at = $now;
 
                 foreach ($passing_changes as $k => $v) {
                     $log->setAttribute($k, $v);
@@ -175,7 +176,7 @@ abstract class BaseModel extends Model
      *
      * @return array
      */
-    public static function getChangesByType(int $event_type, $model): array
+    public static function getChangesByType(int $event_type, Model $model): array
     {
         switch ($event_type) {
             case EventType::CREATED:
