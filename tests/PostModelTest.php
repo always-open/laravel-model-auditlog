@@ -166,4 +166,51 @@ class PostModelTest extends TestCase
 
         $this->assertEquals(1, $post->auditLogs()->count());
     }
+
+    /** @test */
+    public function asOf_gets_correct_value()
+    {
+        $latestTitle = 'first';
+        $nextTitles = [
+            'second',
+            'third',
+            'fourth',
+        ];
+
+        /** @var Post $post */
+        $post = Post::create([
+            'title'     => $latestTitle,
+            'posted_at' => '2019-04-05 12:00:00',
+        ]);
+
+        // Set all current entries to 5 days in the past
+        $date = now()->subDays(5);
+        $postAuditLogs = PostAuditLog::all();
+        $postAuditLogs->each(function (PostAuditLog $auditLog) use ($date) {
+            $auditLog->occurred_at = $date;
+            $auditLog->save();
+        });
+
+
+        foreach ($nextTitles as $title) {
+            $post->title = $title;
+            $post->save();
+        }
+
+        $auditLogEvents = PostAuditLog::where('subject_id', $post->getKey())
+            ->where('field_name', 'title')
+            ->orderBy('occurred_at', 'asc')
+            ->limit(4);
+
+        $auditLogEvents->each(function (PostAuditLog $auditLog) use (&$date) {
+            $date->addDay();
+            $auditLog->occurred_at = $date;
+            $auditLog->save();
+        });
+
+        $auditLogEvents->each(function (PostAuditLog $auditLog) use ($post) {
+            $asOfInstance = $post->asOf($auditLog->occurred_at);
+            $this->assertEquals($auditLog->field_value_new, $asOfInstance->{$auditLog->field_name});
+        });
+    }
 }

@@ -92,4 +92,32 @@ trait AuditLoggable
     {
         return $this->hasMany($this->getAuditLogModelName(), 'subject_id');
     }
+
+    public function fieldAsOf($field, \DateTime $date) : mixed
+    {
+        return $this->auditLogs()
+                ->where('field_name', '=', $field)
+                ->where('occurred_at', '<=', $date)
+                ->orderBy('occurred_at', 'desc')
+                ->orderBy($this->getAuditLogTableName() . '.id')
+                ->first()
+                ->field_value_new ?? null;
+    }
+
+    public function asOf(\DateTime $date) : self
+    {
+        $fields = $this->auditLogs()
+            ->where('occurred_at', '<=', $date)
+            ->select('field_name')
+            ->distinct()
+            ->get();
+
+        $subject = $this->replicate();
+
+        $fields->each(function ($row) use ($date, &$subject) {
+            $subject->{$row->field_name} = $this->fieldAsOf($row->field_name, $date);
+        });
+
+        return $subject;
+    }
 }
