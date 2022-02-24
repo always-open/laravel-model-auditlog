@@ -209,8 +209,8 @@ class PostModelTest extends TestCase
         });
 
         $auditLogEvents->each(function (PostAuditLog $auditLog) use ($post) {
-            $asOfValue = $post->asOf('title', $auditLog->occurred_at);
-            $this->assertEquals($auditLog->field_value_new, $asOfValue);
+            $asOfInstance = $post->asOf($auditLog->occurred_at);
+            $this->assertEquals($auditLog->field_value_new, $asOfInstance->{$auditLog->field_name});
         });
     }
 }
