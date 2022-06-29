@@ -59,7 +59,7 @@ class MakeModelAuditLogTable extends Command
      *
      * @return string
      */
-    public function generateAuditTableName($subject_model, array $config): string
+    public function generateAuditTableName(Model $subject_model, array $config): string
     {
         return $subject_model->getTable() . $config['table_suffix'];
     }
@@ -70,7 +70,7 @@ class MakeModelAuditLogTable extends Command
      *
      * @return string
      */
-    public function generateAuditModelName($subject_model, array $config): string
+    public function generateAuditModelName(Model $subject_model, array $config): string
     {
         return class_basename($subject_model) . $config['model_suffix'];
     }
@@ -82,7 +82,7 @@ class MakeModelAuditLogTable extends Command
      *
      * @return string
      */
-    public function getModelNamespace($subject_model): string
+    public function getModelNamespace(Model $subject_model): string
     {
         return (new ReflectionClass($subject_model))->getNamespaceName();
     }
@@ -93,7 +93,7 @@ class MakeModelAuditLogTable extends Command
      *
      * @throws \ReflectionException
      */
-    public function createModel($subject_model, array $config): void
+    public function createModel(Model $subject_model, array $config): void
     {
         $modelname = $this->generateAuditModelName($subject_model, $config);
 
@@ -114,7 +114,7 @@ class MakeModelAuditLogTable extends Command
      * @param Model $subject_model
      * @param array $config
      */
-    public function createMigration($subject_model, array $config): void
+    public function createMigration(Model $subject_model, array $config): void
     {
         $tablename = $this->generateAuditTableName($subject_model, $config);
         $fileslug = "create_{$tablename}_table";
@@ -176,7 +176,7 @@ class MakeModelAuditLogTable extends Command
      *
      * @return string
      */
-    public function generateMigrationSubjectForeignKeys($subject_model, array $config): string
+    public function generateMigrationSubjectForeignKeys(Model $subject_model, array $config): string
     {
         if (Arr::get($config, 'enable_subject_foreign_keys') === true) {
             return '$table->foreign(\'subject_id\')

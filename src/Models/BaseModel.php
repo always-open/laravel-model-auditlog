@@ -17,7 +17,7 @@ abstract class BaseModel extends Model
 {
     public $casts = [
         self::CREATED_AT => 'datetime:Y-m-d H:i:s.u',
-        self::CREATED_AT => 'datetime:Y-m-d H:i:s.u',
+        self::UPDATED_AT => 'datetime:Y-m-d H:i:s.u',
         'occurred_at'    => 'datetime:Y-m-d H:i:s.u',
     ];
 
@@ -42,7 +42,7 @@ abstract class BaseModel extends Model
 
     /**
      * @param array $changes
-     * @param $model
+     * @param Model $model
      *
      * @return Collection
      */
@@ -68,7 +68,7 @@ abstract class BaseModel extends Model
     public function saveChanges(Collection $passing_changes, int $event_type, Model $model): void
     {
         $passing_changes
-            ->each(function ($change, $key) use ($event_type, $model) {
+            ->each(function ($change, string $key) use ($event_type, $model) {
                 $log = new static();
                 $log->event_type = $event_type;
                 $log->occurred_at = now();
@@ -94,7 +94,7 @@ abstract class BaseModel extends Model
 
     /**
      * @param int $event_type
-     * @param $model
+     * @param Model $model
      * @param string $relationName
      * @param array  $pivotIds
      */
@@ -114,9 +114,9 @@ abstract class BaseModel extends Model
     }
 
     /**
-     * @param $pivot
-     * @param $model
-     * @param $pivotIds
+     * @param string $pivot
+     * @param Model $model
+     * @param array $pivotIds
      *
      * @return array
      */
@@ -181,24 +181,19 @@ abstract class BaseModel extends Model
         switch ($event_type) {
             case EventType::CREATED:
                 return $model->getAttributes();
-                break;
             case EventType::RESTORED:
                 return $model->getChanges();
-                break;
             case EventType::FORCE_DELETED:
                 return []; // if force deleted we want to stop execution here as there would be nothing to correlate records to
-                break;
             case EventType::DELETED:
                 if (method_exists($model, 'getDeletedAtColumn')) {
                     return $model->only($model->getDeletedAtColumn());
                 }
 
                 return [];
-                break;
             case EventType::UPDATED:
             default:
                 return $model->getDirty();
-                break;
         }
     }
 
@@ -223,7 +218,7 @@ abstract class BaseModel extends Model
      *
      * @return mixed
      */
-    public function getSubjectModelClassInstance()
+    public function getSubjectModelClassInstance() : mixed
     {
         $class = $this->getSubjectModelClassname();
 

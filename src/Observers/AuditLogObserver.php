@@ -70,7 +70,7 @@ class AuditLogObserver
      *
      * @return mixed
      */
-    protected function getAuditLogModel(Model $model)
+    protected function getAuditLogModel(Model $model) : mixed
     {
         return $model->getAuditLogModelInstance();
     }

@@ -28,7 +28,7 @@ trait AuditLoggable
      *
      * @return mixed
      */
-    public function getAuditLogModelInstance()
+    public function getAuditLogModelInstance() : mixed
     {
         $class = $this->getAuditLogModelName();
 
