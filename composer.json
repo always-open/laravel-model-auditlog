@@ -10,10 +10,10 @@
     "homepage": "https://github.com/always-open/laravel-model-auditlog",
     "license": "MIT",
     "require": {
-        "php": "^7.3|^8.0",
+        "php": ">=8.2",
         "awobaz/compoships": "^2.0.3",
         "fico7489/laravel-pivot": "^3.0.1",
-        "laravel/framework": "^10.0|^11.0",
+        "laravel/framework": "^11.0|^12.0",
         "always-open/laravel-process-stamps": "^8.0"
     },
     "require-dev": {
