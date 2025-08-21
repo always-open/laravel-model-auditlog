@@ -61,4 +61,11 @@ return [
      * Precision value used in generating audit log tables
      */
     'log_timestamp_precision' => 0,
+
+    'allowed_audit_actions' => [
+        'created',
+        'updated',
+        'deleted',
+        'restored',
+    ],
 ];

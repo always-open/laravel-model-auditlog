@@ -12,8 +12,10 @@ class AuditLogObserver
      */
     public function created(Model $model): void
     {
-        $this->getAuditLogModel($model)
-            ->recordChanges(EventType::CREATED, $model);
+        if ($model->auditEventAllowed($model::AUDIT_EVENT_CREATED)) {
+            $this->getAuditLogModel($model)
+                ->recordChanges(EventType::CREATED, $model);
+        }
     }
 
     /**
@@ -21,8 +23,10 @@ class AuditLogObserver
      */
     public function updated(Model $model): void
     {
-        $this->getAuditLogModel($model)
-            ->recordChanges(EventType::UPDATED, $model);
+        if ($model->auditEventAllowed($model::AUDIT_EVENT_UPDATED)) {
+            $this->getAuditLogModel($model)
+                ->recordChanges(EventType::UPDATED, $model);
+        }
     }
 
     /**
@@ -30,16 +34,18 @@ class AuditLogObserver
      */
     public function deleted(Model $model): void
     {
-        /*
-         * If a model is hard deleting, either via a force delete or that model does not implement
-         * the SoftDeletes trait we should tag it as such so logging doesn't occur down the pipe.
-         */
-        if ((! method_exists($model, 'isForceDeleting') || $model->isForceDeleting())) {
-            $event = EventType::FORCE_DELETED;
-        }
+        if ($model->auditEventAllowed($model::AUDIT_EVENT_DELETED)) {
+            /*
+             * If a model is hard deleting, either via a force delete or that model does not implement
+             * the SoftDeletes trait we should tag it as such so logging doesn't occur down the pipe.
+             */
+            if ((!method_exists($model, 'isForceDeleting') || $model->isForceDeleting())) {
+                $event = EventType::FORCE_DELETED;
+            }
 
-        $this->getAuditLogModel($model)
-            ->recordChanges($event ?? EventType::DELETED, $model);
+            $this->getAuditLogModel($model)
+                ->recordChanges($event ?? EventType::DELETED, $model);
+        }
     }
 
     /**
@@ -47,8 +53,10 @@ class AuditLogObserver
      */
     public function restored(Model $model): void
     {
-        $this->getAuditLogModel($model)
-            ->recordChanges(EventType::RESTORED, $model);
+        if ($model->auditEventAllowed($model::AUDIT_EVENT_RESTORED)) {
+            $this->getAuditLogModel($model)
+                ->recordChanges(EventType::RESTORED, $model);
+        }
     }
 
     /**

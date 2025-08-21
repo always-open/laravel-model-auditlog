@@ -7,6 +7,11 @@ use AlwaysOpen\AuditLog\Observers\AuditLogObserver;
 
 trait AuditLoggable
 {
+    public const AUDIT_EVENT_CREATED = 'created';
+    public const AUDIT_EVENT_UPDATED = 'updated';
+    public const AUDIT_EVENT_DELETED = 'deleted';
+    public const AUDIT_EVENT_RESTORED = 'restored';
+
     /**
      * Boots the trait and sets the observer.
      */
@@ -119,5 +124,28 @@ trait AuditLoggable
         });
 
         return $subject;
+    }
+
+    /**
+     * Overridable but allows all events by default
+     *
+     * @return array
+     */
+    public function allowedAuditActions() : array
+    {
+        return [
+            self::AUDIT_EVENT_CREATED,
+            self::AUDIT_EVENT_UPDATED,
+            self::AUDIT_EVENT_DELETED,
+            self::AUDIT_EVENT_RESTORED,
+        ];
+    }
+
+    public function auditEventAllowed(string $event) : bool
+    {
+        return in_array(
+            $event,
+            array_intersect($this->allowedAuditActions(), config('model-auditlog.allowed_audit_actions', []))
+        );
     }
 }
