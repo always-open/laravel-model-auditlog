@@ -27,4 +27,26 @@ class ConfigurableNamespaceTest extends TestCase
         // Post is in AlwaysOpen\AuditLog\Tests\Fakes\Models namespace
         $this->assertEquals('AlwaysOpen\\AuditLog\\Tests\\Fakes\\Models\\PostAuditLog', $post->getAuditLogModelName());
     }
+
+    /** @test */
+    public function command_uses_configured_namespace()
+    {
+        config(['model-auditlog.model_namespace' => 'App\\AuditLogs']);
+
+        $command = new \AlwaysOpen\AuditLog\Console\Commands\MakeModelAuditLogTable();
+        $post = new Post();
+
+        $this->assertEquals('App\\AuditLogs', $command->getModelNamespace($post));
+    }
+
+    /** @test */
+    public function command_uses_default_namespace_when_config_is_null()
+    {
+        config(['model-auditlog.model_namespace' => null]);
+
+        $command = new \AlwaysOpen\AuditLog\Console\Commands\MakeModelAuditLogTable();
+        $post = new Post();
+
+        $this->assertEquals('AlwaysOpen\\AuditLog\\Tests\\Fakes\\Models', $command->getModelNamespace($post));
+    }
 }
