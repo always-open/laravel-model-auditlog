@@ -2,8 +2,8 @@
 
 namespace AlwaysOpen\AuditLog\Traits;
 
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use AlwaysOpen\AuditLog\Observers\AuditLogObserver;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 trait AuditLoggable
 {
@@ -25,7 +25,14 @@ trait AuditLoggable
      */
     public function getAuditLogModelName(): string
     {
-        return get_class($this) . config('model-auditlog.model_suffix');
+        $namespace = config('model-auditlog.model_namespace');
+        $modelName = class_basename($this) . config('model-auditlog.model_suffix');
+
+        if ($namespace) {
+            return rtrim($namespace, '\\') . '\\' . $modelName;
+        }
+
+        return (new \ReflectionClass($this))->getNamespaceName() . '\\' . $modelName;
     }
 
     /**

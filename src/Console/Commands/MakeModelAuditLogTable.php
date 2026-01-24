@@ -84,6 +84,10 @@ class MakeModelAuditLogTable extends Command
      */
     public function getModelNamespace($subject_model): string
     {
+        if ($namespace = config('model-auditlog.model_namespace')) {
+            return $namespace;
+        }
+
         return (new ReflectionClass($subject_model))->getNamespaceName();
     }
 

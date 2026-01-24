@@ -20,6 +20,12 @@ return [
 
     'model_path' => app_path(),
 
+    /*
+     * This is the default namespace applied to models' class names.
+     * If this is null, the model will be created in the same namespace as the subject model.
+     */
+    'model_namespace' => null,
+
     'model_stub' => __DIR__ . '/../stubs/model.stub',
 
     'migration_path' => database_path('migrations'),
