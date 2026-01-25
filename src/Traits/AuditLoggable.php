@@ -3,7 +3,9 @@
 namespace AlwaysOpen\AuditLog\Traits;
 
 use AlwaysOpen\AuditLog\Observers\AuditLogObserver;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use ReflectionClass;
 
 trait AuditLoggable
 {
@@ -21,18 +23,30 @@ trait AuditLoggable
     }
 
     /**
-     * @return string
+     * @throws \ReflectionException
      */
-    public function getAuditLogModelName(): string
+    public function getAuditLogModelName(?string $className = null): string
     {
         $namespace = config('model-auditlog.model_namespace');
-        $modelName = class_basename($this) . config('model-auditlog.model_suffix');
+        $targetClass = $className ?: get_class($this);
+        $modelName = class_basename($targetClass) . config('model-auditlog.model_suffix');
 
         if ($namespace) {
-            return rtrim($namespace, '\\') . '\\' . $modelName;
+            $fullClassName = rtrim($namespace, '\\') . '\\' . $modelName;
+        } else {
+            $fullClassName = (new ReflectionClass($targetClass))->getNamespaceName() . '\\' . $modelName;
         }
 
-        return (new \ReflectionClass($this))->getNamespaceName() . '\\' . $modelName;
+        if (class_exists($fullClassName)) {
+            return $fullClassName;
+        }
+
+        $parent = get_parent_class($targetClass);
+        if ($parent && is_subclass_of($parent, Model::class)) {
+            return $this->getAuditLogModelName($parent);
+        }
+
+        return $fullClassName;
     }
 
     /**
@@ -52,6 +66,11 @@ trait AuditLoggable
      */
     public function getAuditLogTableName(): string
     {
+        $modelClass = $this->getAuditLogModelName();
+        if (class_exists($modelClass)) {
+            return (new $modelClass())->getTable();
+        }
+
         return $this->getTable() . config('model-auditlog.table_suffix');
     }
 
@@ -99,6 +118,8 @@ trait AuditLoggable
      * Get the audit logs for this model.
      *
      * @return HasMany|null
+     *
+     * @throws \ReflectionException
      */
     public function auditLogs(): ?HasMany
     {
