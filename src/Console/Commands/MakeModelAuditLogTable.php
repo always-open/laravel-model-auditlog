@@ -84,6 +84,10 @@ class MakeModelAuditLogTable extends Command
      */
     public function getModelNamespace($subject_model): string
     {
+        if ($namespace = config('model-auditlog.model_namespace')) {
+            return $namespace;
+        }
+
         return (new ReflectionClass($subject_model))->getNamespaceName();
     }
 
@@ -104,6 +108,15 @@ class MakeModelAuditLogTable extends Command
         ]);
 
         $filename = $config['model_path'] . DIRECTORY_SEPARATOR . $modelname . '.php';
+
+        $directory = dirname($filename);
+        if (! is_dir($directory)) {
+            if (! mkdir($directory, 0755, true) && ! is_dir($directory)) {
+                $this->error("Directory {$directory} could not be created");
+
+                return;
+            }
+        }
 
         if (file_put_contents($filename, $stub)) {
             $this->info("Model successfully created at: $filename");
@@ -223,6 +236,6 @@ class MakeModelAuditLogTable extends Command
 
     public function generatePrecisionValue(array $config): string
     {
-        return (string) Arr::get($config, 'log_timestamp_precision', 0) ?? 0;
+        return (string) (Arr::get($config, 'log_timestamp_precision', 0) ?? 0);
     }
 }
