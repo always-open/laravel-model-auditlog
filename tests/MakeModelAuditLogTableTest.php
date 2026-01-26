@@ -105,7 +105,6 @@ class MakeModelAuditLogTableTest extends TestCase
             ->expectsConfirmation('Do you want to regenerate a new model and migration for ' . $class . '?', 'no')
             ->assertExitCode(0);
 
-        // Should not have created files
         $this->assertFalse(File::exists($modelPath . '/PostAuditLog.php'));
     }
 
