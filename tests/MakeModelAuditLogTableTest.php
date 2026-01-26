@@ -49,11 +49,11 @@ class MakeModelAuditLogTableTest extends TestCase
             'model-auditlog.migration_path' => $migrationPath,
         ]);
 
-        $model = User::class;
+        $class = User::class;
 
-        $this->artisan('make:model-auditlog', ['existing-model-class' => $model])
+        $this->artisan('make:model-auditlog', ['existing-model-class' => $class])
             ->assertExitCode(0)
-            ->expectsOutputToContain("Generating audit log model and table migration for: $model")
+            ->expectsOutputToContain("Generating audit log model and table migration for: $class")
             ->expectsOutputToContain("Model successfully created at: $modelPath/UserAuditLog.php");
 
         $this->assertTrue(File::exists($modelPath . '/UserAuditLog.php'));
