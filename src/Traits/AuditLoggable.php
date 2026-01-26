@@ -3,11 +3,9 @@
 namespace AlwaysOpen\AuditLog\Traits;
 
 use AlwaysOpen\AuditLog\Observers\AuditLogObserver;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
 use ReflectionClass;
-use staabm\SideEffectsDetector\SideEffect;
 
 trait AuditLoggable
 {
