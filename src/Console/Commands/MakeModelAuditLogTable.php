@@ -2,12 +2,12 @@
 
 namespace AlwaysOpen\AuditLog\Console\Commands;
 
+use AlwaysOpen\AuditLog\Traits\AuditLoggable;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\File;
-use ReflectionClass;
 
 class MakeModelAuditLogTable extends Command
 {
@@ -34,23 +34,23 @@ class MakeModelAuditLogTable extends Command
         $class = $this->argument('existing-model-class');
 
         if (! class_exists($class)) {
-            $this->error("Class $class could not be found");
+            $this->error("Class $class not found");
 
             return self::FAILURE;
         }
 
         $subjectModel = new $class();
 
-        if (! method_exists($subjectModel, 'getAuditLogModelName')) {
+        if (! in_array(AuditLoggable::class, class_uses_recursive($subjectModel), true)) {
             $this->error("Class $class does not use the AuditLoggable trait");
 
             return self::FAILURE;
         }
 
-        $existingAuditModel = $subjectModel->getAuditLogModelName();
-        if (class_exists($existingAuditModel)) {
-            $this->warn("An audit log model already exists for this model or its parent: $existingAuditModel");
-            if (! $this->confirm('Do you want to generate a new one specifically for ' . $class . '?', false)) {
+        $auditLogModelClass = $subjectModel->getAuditLogModelName();
+        if (class_exists($auditLogModelClass)) {
+            $this->warn("An audit log model already exists for this model: $auditLogModelClass");
+            if (! $this->confirm('Do you want to regenerate a new model and migration for ' . $class . '?', false)) {
                 return self::SUCCESS;
             }
         }
@@ -59,10 +59,10 @@ class MakeModelAuditLogTable extends Command
 
         $config = config('model-auditlog');
 
-        $this->line("Audit Table will be {$this->generateAuditTableName($subjectModel, $config)}");
+        $this->line("Audit Table will be {$this->generateAuditTableName($subjectModel)}");
         $this->createMigration($subjectModel, $config);
 
-        $this->line("Audit Model will be {$this->generateAuditModelName($subjectModel, $config)}");
+        $this->line("Audit Model will be {$this->generateAuditModelName($subjectModel)}");
         $this->createModel($subjectModel, $config);
 
         return self::SUCCESS;
@@ -70,54 +70,44 @@ class MakeModelAuditLogTable extends Command
 
     /**
      * @param Model $subjectModel
-     * @param array $config
      *
      * @return string
      */
-    public function generateAuditTableName($subjectModel, array $config): string
+    public function generateAuditTableName(Model $subjectModel): string
     {
-        return $subjectModel->getTable() . $config['table_suffix'];
-    }
-
-    /**
-     * @param Model $subjectModel
-     * @param array $config
-     *
-     * @return string
-     */
-    public function generateAuditModelName($subjectModel, array $config): string
-    {
-        return class_basename($subjectModel) . $config['model_suffix'];
+        return $subjectModel->getAuditLogTableName();
     }
 
     /**
      * @param Model $subjectModel
      *
-     * @throws \ReflectionException
+     * @return string
+     */
+    public function generateAuditModelName(Model $subjectModel): string
+    {
+        return Str::afterLast($subjectModel->getAuditLogModelName(), '\\');
+    }
+
+    /**
+     * @param Model $subjectModel
      *
      * @return string
      */
-    public function getModelNamespace($subjectModel): string
+    public function getModelNamespace(Model $subjectModel): string
     {
-        if ($namespace = config('model-auditlog.model_namespace')) {
-            return $namespace;
-        }
-
-        return (new ReflectionClass($subjectModel))->getNamespaceName();
+        return $subjectModel->getAuditLogModelNamespace();
     }
 
     /**
      * @param Model $subjectModel
      * @param array $config
-     *
-     * @throws \ReflectionException
      */
-    public function createModel($subjectModel, array $config): void
+    public function createModel(Model $subjectModel, array $config): void
     {
-        $modelName = $this->generateAuditModelName($subjectModel, $config);
+        $modelName = $this->generateAuditModelName($subjectModel);
 
         $stub = $this->getStubWithReplacements($config['model_stub'], [
-            '{TABLE_NAME}' => $this->generateAuditTableName($subjectModel, $config),
+            '{TABLE_NAME}' => $this->generateAuditTableName($subjectModel),
             '{CLASS_NAME}' => $modelName,
             '{NAMESPACE}'  => $this->getModelNamespace($subjectModel),
         ]);
@@ -143,9 +133,9 @@ class MakeModelAuditLogTable extends Command
      * @param Model $subjectModel
      * @param array $config
      */
-    public function createMigration($subjectModel, array $config): void
+    public function createMigration(Model $subjectModel, array $config): void
     {
-        $tableName = $this->generateAuditTableName($subjectModel, $config);
+        $tableName = $this->generateAuditTableName($subjectModel);
         $fileSlug = "create_{$tableName}_table";
 
         $stub = $this->getStubWithReplacements($config['migration_stub'], [
@@ -215,7 +205,7 @@ class MakeModelAuditLogTable extends Command
      *
      * @return string
      */
-    public function generateMigrationSubjectForeignKeys($subjectModel, array $config): string
+    public function generateMigrationSubjectForeignKeys(Model $subjectModel, array $config): string
     {
         if (Arr::get($config, 'enable_subject_foreign_keys') === true) {
             return '$table->foreign(\'subject_id\')

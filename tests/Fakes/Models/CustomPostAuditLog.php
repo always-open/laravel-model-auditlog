@@ -8,7 +8,5 @@ class CustomPostAuditLog extends BaseModel
 {
     public $timestamps = false;
 
-    public $table = 'custom_posts_auditlog';
-
     protected $guarded = [];
 }

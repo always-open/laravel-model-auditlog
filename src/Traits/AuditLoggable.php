@@ -5,7 +5,9 @@ namespace AlwaysOpen\AuditLog\Traits;
 use AlwaysOpen\AuditLog\Observers\AuditLogObserver;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Str;
 use ReflectionClass;
+use staabm\SideEffectsDetector\SideEffect;
 
 trait AuditLoggable
 {
@@ -25,28 +27,25 @@ trait AuditLoggable
     /**
      * @throws \ReflectionException
      */
-    public function getAuditLogModelName(?string $className = null): string
+    public function getAuditLogModelName(): string
+    {
+        $modelSuffix = config('model-auditlog.model_suffix');
+
+        $tableName = Str::afterLast($this->getTable(), '.');
+        $modelName = Str::studly(Str::singular($tableName)) . $modelSuffix;
+
+        return $this->getAuditLogModelNamespace() . '\\' . $modelName;
+    }
+
+    public function getAuditLogModelNamespace(): string
     {
         $namespace = config('model-auditlog.model_namespace');
-        $targetClass = $className ?: get_class($this);
-        $modelName = class_basename($targetClass) . config('model-auditlog.model_suffix');
 
-        if ($namespace) {
-            $fullClassName = rtrim($namespace, '\\') . '\\' . $modelName;
-        } else {
-            $fullClassName = (new ReflectionClass($targetClass))->getNamespaceName() . '\\' . $modelName;
+        if (!empty($namespace)) {
+            return rtrim($namespace, '\\');
         }
 
-        if (class_exists($fullClassName)) {
-            return $fullClassName;
-        }
-
-        $parent = get_parent_class($targetClass);
-        if ($parent && is_subclass_of($parent, Model::class)) {
-            return $this->getAuditLogModelName($parent);
-        }
-
-        return $fullClassName;
+        return (new ReflectionClass($this))->getNamespaceName();
     }
 
     /**
@@ -66,11 +65,6 @@ trait AuditLoggable
      */
     public function getAuditLogTableName(): string
     {
-        $modelClass = $this->getAuditLogModelName();
-        if (class_exists($modelClass)) {
-            return (new $modelClass())->getTable();
-        }
-
         return $this->getTable() . config('model-auditlog.table_suffix');
     }
 
