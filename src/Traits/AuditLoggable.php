@@ -4,6 +4,8 @@ namespace AlwaysOpen\AuditLog\Traits;
 
 use AlwaysOpen\AuditLog\Observers\AuditLogObserver;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Str;
+use ReflectionClass;
 
 trait AuditLoggable
 {
@@ -21,18 +23,27 @@ trait AuditLoggable
     }
 
     /**
-     * @return string
+     * @throws \ReflectionException
      */
     public function getAuditLogModelName(): string
     {
-        $namespace = config('model-auditlog.model_namespace');
-        $modelName = class_basename($this) . config('model-auditlog.model_suffix');
+        $modelSuffix = config('model-auditlog.model_suffix');
 
-        if ($namespace) {
-            return rtrim($namespace, '\\') . '\\' . $modelName;
+        $tableName = Str::afterLast($this->getTable(), '.');
+        $modelName = Str::studly(Str::singular($tableName)) . $modelSuffix;
+
+        return $this->getAuditLogModelNamespace() . '\\' . $modelName;
+    }
+
+    public function getAuditLogModelNamespace(): string
+    {
+        $namespace = config('model-auditlog.model_namespace');
+
+        if (!empty($namespace)) {
+            return rtrim($namespace, '\\');
         }
 
-        return (new \ReflectionClass($this))->getNamespaceName() . '\\' . $modelName;
+        return (new ReflectionClass($this))->getNamespaceName();
     }
 
     /**
@@ -99,6 +110,8 @@ trait AuditLoggable
      * Get the audit logs for this model.
      *
      * @return HasMany|null
+     *
+     * @throws \ReflectionException
      */
     public function auditLogs(): ?HasMany
     {
