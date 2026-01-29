@@ -52,7 +52,7 @@ public function getAuditLogIgnoredFields() : array
 }
 ```
 
-Using that functionality, you can add more custom logic around what should be logged. An example might be to not log the title changes of a post if the post has not been published yet.
+Using this functionality, you can add more custom logic around what should be logged. An example might be to not log the title changes of a post if the post has not been published yet.
 ```php
 public function getAuditLogIgnoredFields() : array
 {
@@ -85,7 +85,7 @@ Schema::create('post_tag_auditlog', function (Blueprint $table) {
 });
 ```
 
-Create a model for the pivot table that extends Laravel's Pivot class. This class must use the AuditLoggablePivot trait and have a defined `$audit_loggable_keys` variable, which is used to map the pivot to the audit log table.
+Create a model for the pivot table that extends Laravel's Pivot class. This class must use the `AuditLoggablePivot` trait and have a defined `$audit_loggable_keys` variable, which is used to map the pivot to the audit log table.
  
 ```php
 class PostTag extends Pivot
@@ -106,7 +106,7 @@ class PostTag extends Pivot
 ```
 Side note: if a column shares the same name in the pivot and a column already in the audit log table (ex: `user_id`), change the name of the column in the audit log table (ex: `audit_user_id`) and define the relationship as `'audit_user_id' => 'user_id'`.
 
-The two models that are joined by the pivot will need to be updated so that events fire on the pivot model. Currently Laravel doesn't support pivot events so a third party package is required.
+The two models that are joined by the pivot will need to be updated so that events fire on the pivot model. Currently, a third-party package is required because Laravel doesn't support pivot model events.
 ```php
 composer require fico7489/laravel-pivot
 ```
@@ -139,7 +139,7 @@ public function posts()
 }
 ```
 
-When a pivot record is deleted through `detach` or `sync`, an audit log record for each of the keys (ex: `post_id` and `tag_id`) will added to the audit log table. The `field_value_old` will be the id of the record and the `field_value_new` will be null. The records will have an event type of `PIVOT_DELETED` (id: 6). 
+When a pivot record is deleted through `detach` or `sync`, an audit log record for each of the keys (ex: `post_id` and `tag_id`) will be added to the audit log table. The `field_value_old` will be the id of the record and the `field_value_new` will be null. The records will have an event type of `PIVOT_DELETED` (id: 6). 
 
 If you need to pull the audit logs through the `auditLogs` relationship (ex: $post_tag->auditLogs()->get()), support for composite keys is required.
 ```php
@@ -191,7 +191,7 @@ Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
 
 ### Security
 
-If you discover any security related issues, please email @tomschlick / @qschmick instead of using the issue tracker.
+If you discover any security-related issues, please email @tomschlick / @qschmick instead of using the issue tracker.
 
 ## Credits
 

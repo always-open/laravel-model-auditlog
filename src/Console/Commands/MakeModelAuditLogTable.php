@@ -93,7 +93,7 @@ class MakeModelAuditLogTable extends Command
      *
      * @return string
      */
-    public function getModelNamespace(Model $subjectModel): string
+    public function generateModelNamespace(Model $subjectModel): string
     {
         return $subjectModel->getAuditLogModelNamespace();
     }
@@ -109,7 +109,9 @@ class MakeModelAuditLogTable extends Command
         $stub = $this->getStubWithReplacements($config['model_stub'], [
             '{TABLE_NAME}' => $this->generateAuditTableName($subjectModel),
             '{CLASS_NAME}' => $modelName,
-            '{NAMESPACE}'  => $this->getModelNamespace($subjectModel),
+            '{NAMESPACE}'  => $this->generateModelNamespace($subjectModel),
+            '{AUDIT_LOGGABLE_CLASS}'  => get_class($subjectModel),
+            '{AUDIT_LOGGABLE_CLASS_CONSTANT}'  => class_basename($subjectModel) . '::class',
         ]);
 
         $filename = $config['model_path'] . DIRECTORY_SEPARATOR . $modelName . '.php';

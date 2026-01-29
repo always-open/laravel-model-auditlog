@@ -18,16 +18,22 @@ return [
      */
     'model_suffix' => 'AuditLog',
 
-    'model_path' => app_path(),
-
-    /*
-     * This is the default namespace applied to models' class names.
-     * If this is null, the model will be created in the same namespace as the subject model.
+    /**
+     * The namespace for the audit log models. You only need to set this value if
+     * your app's audit log model namespace differs from their related audit loggable model.
      */
     'model_namespace' => null,
 
+    /**
+     * The path where the audit log models are stored.
+     */
+    'model_path' => app_path(),
+
     'model_stub' => __DIR__ . '/../stubs/model.stub',
 
+    /**
+     * The path where the database migrations are stored.
+     */
     'migration_path' => database_path('migrations'),
 
     'migration_stub' => __DIR__ . '/../stubs/migration.stub',

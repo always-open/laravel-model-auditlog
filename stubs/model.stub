@@ -3,10 +3,13 @@
 namespace {NAMESPACE};
 
 use AlwaysOpen\AuditLog\Models\BaseModel;
+use {AUDIT_LOGGABLE_CLASS};
 
 class {CLASS_NAME} extends BaseModel
 {
     protected $table = '{TABLE_NAME}';
 
     protected $guarded = [];
+
+    protected string $auditLoggableModel = {AUDIT_LOGGABLE_CLASS_CONSTANT};
 }

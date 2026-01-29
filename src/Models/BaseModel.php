@@ -15,19 +15,24 @@ use AlwaysOpen\AuditLog\EventType;
  */
 abstract class BaseModel extends Model
 {
-    public $casts = [
-        self::CREATED_AT => 'datetime:Y-m-d H:i:s.u',
-        self::CREATED_AT => 'datetime:Y-m-d H:i:s.u',
-        'occurred_at'    => 'datetime:Y-m-d H:i:s.u',
-    ];
-
     protected $dateFormat = 'Y-m-d H:i:s.u';
 
     /**
-     * Record the change in the appropriate audit log table.
+     * Get the attributes that should be cast.
      *
-     * @param int   $event_type
-     * @param Model $model
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            self::CREATED_AT => 'datetime:Y-m-d H:i:s.u',
+            self::UPDATED_AT => 'datetime:Y-m-d H:i:s.u',
+            'occurred_at'    => 'datetime:Y-m-d H:i:s.u',
+        ];
+    }
+
+    /**
+     * Record the change in the appropriate audit log table.
      */
     public function recordChanges(int $event_type, Model $model): void
     {
@@ -40,12 +45,6 @@ abstract class BaseModel extends Model
         );
     }
 
-    /**
-     * @param array $changes
-     * @param $model
-     *
-     * @return Collection
-     */
     public function passingChanges(array $changes, Model $model): Collection
     {
         return collect($changes)
@@ -60,11 +59,6 @@ abstract class BaseModel extends Model
             ]);
     }
 
-    /**
-     * @param Collection $passing_changes
-     * @param int        $event_type
-     * @param Model      $model
-     */
     public function saveChanges(Collection $passing_changes, int $event_type, Model $model): void
     {
         $passing_changes
@@ -87,17 +81,10 @@ abstract class BaseModel extends Model
                 }
                 $log->setAttribute('field_value_new', $change);
 
-                $log->attributes;
                 $log->save();
             });
     }
 
-    /**
-     * @param int $event_type
-     * @param $model
-     * @param string $relationName
-     * @param array  $pivotIds
-     */
     public function recordPivotChanges(int $event_type, Model $model, string $relationName, array $pivotIds): void
     {
         $pivot = $model->{$relationName}()->getPivotClass();
@@ -113,17 +100,10 @@ abstract class BaseModel extends Model
         }
     }
 
-    /**
-     * @param $pivot
-     * @param $model
-     * @param $pivotIds
-     *
-     * @return array
-     */
     public function getPivotChanges($pivot, Model $model, array $pivotIds): array
     {
         $columns = (new $pivot())->getAuditLogForeignKeyColumns();
-        $key = in_array($model->getForeignKey(), $columns) ? $model->getForeignKey() : $model->getKeyName();
+        $key = in_array($model->getForeignKey(), $columns, true) ? $model->getForeignKey() : $model->getKeyName();
 
         $changes = [];
         foreach ($pivotIds as $id => $pivotId) {
@@ -139,11 +119,6 @@ abstract class BaseModel extends Model
         return $changes;
     }
 
-    /**
-     * @param Collection $passing_changes
-     * @param int        $event_type
-     * @param $pivot
-     */
     public function savePivotChanges(Collection $passing_changes, int $event_type, $pivot): void
     {
         $now = now();
@@ -165,57 +140,40 @@ abstract class BaseModel extends Model
                 $log->setAttribute('field_value_old', $change);
                 $log->setAttribute('field_value_new', null);
 
-                $log->attributes;
                 $log->save();
             });
     }
 
-    /**
-     * @param int   $event_type
-     * @param Model $model
-     *
-     * @return array
-     */
     public static function getChangesByType(int $event_type, Model $model): array
     {
         switch ($event_type) {
             case EventType::CREATED:
                 return $model->getAttributes();
-                break;
             case EventType::RESTORED:
                 return $model->getChanges();
-                break;
             case EventType::FORCE_DELETED:
                 return []; // if force deleted we want to stop execution here as there would be nothing to correlate records to
-                break;
             case EventType::DELETED:
                 if (method_exists($model, 'getDeletedAtColumn')) {
                     return $model->only($model->getDeletedAtColumn());
                 }
 
                 return [];
-                break;
             case EventType::UPDATED:
             default:
                 return $model->getDirty();
-                break;
         }
     }
 
-    /**
-     * @return BelongsTo|null
-     */
     public function subject(): ?BelongsTo
     {
         return $this->belongsTo($this->getSubjectModelClassname(), 'subject_id');
     }
 
-    /**
-     * @return string
-     */
     public function getSubjectModelClassname(): string
     {
-        return str_replace(config('model-auditlog.model_suffix'), '', get_class($this));
+        return $this->auditLoggableModel ??
+            str_replace(config('model-auditlog.model_suffix'), '', get_class($this));
     }
 
     /**
