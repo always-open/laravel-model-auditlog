@@ -110,7 +110,7 @@ class MakeModelAuditLogTable extends Command
             '{TABLE_NAME}' => $this->generateAuditTableName($subjectModel),
             '{CLASS_NAME}' => $modelName,
             '{NAMESPACE}'  => $this->generateModelNamespace($subjectModel),
-            '{AUDIT_LOGGABLE_CLASS}'  => (new \ReflectionClass($subjectModel))->getNamespaceName(),
+            '{AUDIT_LOGGABLE_CLASS}'  => get_class($subjectModel),
             '{AUDIT_LOGGABLE_CLASS_CONSTANT}'  => class_basename($subjectModel) . '::class',
         ]);
 
