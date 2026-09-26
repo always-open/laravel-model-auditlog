@@ -156,6 +156,12 @@ trait AuditLoggable
         return $whenUnknown;
     }
 
+    /**
+     * Get an unsaved copy of this model with its audited fields set to the values
+     * they held on the given date, reconstructed from the audit log.
+     *
+     * Fields whose value on that date can't be determined keep their current value.
+     */
     public function asOf(\DateTime $date) : self
     {
         $fields = $this->auditLogs()
