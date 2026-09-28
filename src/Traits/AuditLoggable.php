@@ -2,6 +2,7 @@
 
 namespace AlwaysOpen\AuditLog\Traits;
 
+use AlwaysOpen\AuditLog\EventType;
 use AlwaysOpen\AuditLog\Observers\AuditLogObserver;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
@@ -118,29 +119,65 @@ trait AuditLoggable
         return $this->hasMany($this->getAuditLogModelName(), 'subject_id');
     }
 
-    public function fieldAsOf($field, \DateTime $date) : mixed
+    /**
+     * Get the value a field held on the given date.
+     *
+     * Uses the newest row at or before the date. Failing that, the earliest later
+     * row's old value, when that row recorded one. Returns $whenUnknown when the
+     * value can't be determined (no rows, or the model didn't exist yet).
+     */
+    public function fieldAsOf($field, \DateTime $date, mixed $whenUnknown = null) : mixed
     {
-        return $this->auditLogs()
-                ->where('field_name', '=', $field)
-                ->where('occurred_at', '<=', $date)
-                ->orderBy('occurred_at', 'desc')
-                ->orderBy($this->getAuditLogTableName() . '.id')
-                ->first()
-                ->field_value_new ?? null;
+        $before = $this->auditLogs()
+            ->where('field_name', '=', $field)
+            ->where('occurred_at', '<=', $date)
+            ->orderBy('occurred_at', 'desc')
+            ->orderBy($this->getAuditLogTableName() . '.id')
+            ->first();
+
+        if ($before) {
+            return $before->field_value_new;
+        }
+
+        $after = $this->auditLogs()
+            ->where('field_name', '=', $field)
+            ->where('occurred_at', '>', $date)
+            ->orderBy('occurred_at')
+            ->orderBy($this->getAuditLogTableName() . '.id')
+            ->first();
+
+        // Only updates record the prior value, and a soft delete implies deleted_at was null.
+        // Created rows mean the model didn't exist; restored rows are written after the
+        // original is synced, so their old value is never recorded.
+        if ($after && in_array((int) $after->event_type, [EventType::UPDATED, EventType::DELETED], true)) {
+            return $after->field_value_old;
+        }
+
+        return $whenUnknown;
     }
 
+    /**
+     * Get an unsaved copy of this model with its audited fields set to the values
+     * they held on the given date, reconstructed from the audit log.
+     *
+     * Fields whose value on that date can't be determined keep their current value.
+     */
     public function asOf(\DateTime $date) : self
     {
         $fields = $this->auditLogs()
-            ->where('occurred_at', '<=', $date)
             ->select('field_name')
             ->distinct()
             ->get();
 
         $subject = $this->replicate();
+        $unknown = new \stdClass();
 
-        $fields->each(function ($row) use ($date, &$subject) {
-            $subject->{$row->field_name} = $this->fieldAsOf($row->field_name, $date);
+        $fields->each(function ($row) use ($date, &$subject, $unknown) {
+            $value = $this->fieldAsOf($row->field_name, $date, $unknown);
+
+            if ($value !== $unknown) {
+                $subject->{$row->field_name} = $value;
+            }
         });
 
         return $subject;
