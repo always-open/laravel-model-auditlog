@@ -18,7 +18,7 @@
     },
     "require-dev": {
         "doctrine/dbal": "^4.2",
-        "orchestra/testbench": "^9.10",
+        "orchestra/testbench": "^9.10|^10.0",
         "phpunit/phpunit": "^11.0"
     },
     "autoload": {
