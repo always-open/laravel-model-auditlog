@@ -7,26 +7,27 @@ use Illuminate\Support\Collection;
 use AlwaysOpen\AuditLog\EventType;
 use AlwaysOpen\AuditLog\Tests\Fakes\Models\Tag;
 use AlwaysOpen\AuditLog\Tests\Fakes\Models\TagAuditLog;
+use PHPUnit\Framework\Attributes\Test;
 
 class TagModelTest extends TestCase
 {
     use DatabaseTransactions;
 
-    /** @test */
+    #[Test]
     public function can_get_classname_of_auditlog_model()
     {
         $tag = new Tag();
         $this->assertEquals(TagAuditLog::class, $tag->getAuditLogModelName());
     }
 
-    /** @test */
+    #[Test]
     public function can_get_instance_of_auditlog_model()
     {
         $tag = new Tag();
         $this->assertInstanceOf(TagAuditLog::class, $tag->getAuditLogModelInstance());
     }
 
-    /** @test */
+    #[Test]
     public function creating_a_tag_triggers_a_revision()
     {
         /** @var Tag $tag */
@@ -50,7 +51,7 @@ class TagModelTest extends TestCase
         $this->assertEquals('2019-04-05 12:00:00', $taged->field_value_new);
     }
 
-    /** @test */
+    #[Test]
     public function updating_a_tag_triggers_a_revision()
     {
         /** @var Tag $tag */
@@ -71,7 +72,7 @@ class TagModelTest extends TestCase
         $this->assertEquals('My New Title', $title->field_value_new);
     }
 
-    /** @test */
+    #[Test]
     public function deleting_a_tag_triggers_a_revision()
     {
         /** @var Tag $tag */
@@ -93,7 +94,7 @@ class TagModelTest extends TestCase
         $this->assertNotEmpty($last->field_value_new);
     }
 
-    /** @test */
+    #[Test]
     public function force_deleting_a_tag_does_not_trigger_a_revision()
     {
         /** @var Tag $tag */

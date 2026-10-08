@@ -6,12 +6,13 @@ use AlwaysOpen\AuditLog\Tests\Fakes\Models\Post;
 use AlwaysOpen\AuditLog\Tests\Fakes\Models\PostAuditLog;
 use AlwaysOpen\AuditLog\Tests\Fakes\Models\AuditLogs\PostAuditLog AS CustomNamespacePostAuditLog;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use PHPUnit\Framework\Attributes\Test;
 
 class BaseModelTest extends TestCase
 {
     use DatabaseTransactions;
 
-    /** @test */
+    #[Test]
     public function it_gets_correct_subject_model_classname_with_default_namespace()
     {
         $auditLog = new PostAuditLog();
@@ -19,7 +20,7 @@ class BaseModelTest extends TestCase
         $this->assertEquals(Post::class, $auditLog->getSubjectModelClassname());
     }
 
-    /** @test */
+    #[Test]
     public function it_gets_correct_subject_model_classname_with_custom_namespace()
     {
         config(['model-auditlog.model_namespace' => 'AlwaysOpen\Tests\Fakes\Models\AuditLogs']);
@@ -29,7 +30,7 @@ class BaseModelTest extends TestCase
         $this->assertEquals(Post::class, $auditLog->getSubjectModelClassname());
     }
 
-    /** @test */
+    #[Test]
     public function it_gets_correct_subject_model_classname_with_custom_suffix()
     {
         config(['model-auditlog.model_suffix' => 'AuditLog']);
@@ -42,7 +43,7 @@ class BaseModelTest extends TestCase
         $this->assertEquals('AlwaysOpen\AuditLog\Tests\Fakes\Models\PostAudit', $auditLog->getSubjectModelClassname());
     }
 
-    /** @test */
+    #[Test]
     public function it_can_get_subject_model_instance_with_default_namespace()
     {
         $auditLog = new PostAuditLog();
@@ -51,7 +52,7 @@ class BaseModelTest extends TestCase
         $this->assertInstanceOf(Post::class, $subject);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_get_subject_model_instance_with_custom_namespace()
     {
         config(['model-auditlog.model_namespace' => 'AlwaysOpen\Tests\Fakes\Models\AuditLogs']);

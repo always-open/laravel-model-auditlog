@@ -7,6 +7,7 @@ use AlwaysOpen\AuditLog\Tests\Fakes\Models\Post;
 use AlwaysOpen\AuditLog\Tests\Fakes\Models\PostAuditLog;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Carbon;
+use PHPUnit\Framework\Attributes\Test;
 
 class AsOfTest extends TestCase
 {
@@ -40,7 +41,7 @@ class AsOfTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function date_before_first_update_returns_its_old_value()
     {
         $post = $this->postWithoutHistory();
@@ -50,7 +51,7 @@ class AsOfTest extends TestCase
         $this->assertEquals('original', $post->fieldAsOf('title', Carbon::parse('2020-01-01')));
     }
 
-    /** @test */
+    #[Test]
     public function date_before_created_row_returns_unknown()
     {
         $post = $this->postWithoutHistory();
@@ -61,7 +62,7 @@ class AsOfTest extends TestCase
         $this->assertEquals('fallback', $post->fieldAsOf('title', $date, 'fallback'));
     }
 
-    /** @test */
+    #[Test]
     public function update_with_null_old_value_returns_null_not_unknown()
     {
         $post = $this->postWithoutHistory();
@@ -70,7 +71,7 @@ class AsOfTest extends TestCase
         $this->assertNull($post->fieldAsOf('title', Carbon::parse('2020-01-01'), 'fallback'));
     }
 
-    /** @test */
+    #[Test]
     public function date_before_restore_uses_paired_update_row()
     {
         $post = $this->postWithoutHistory();
@@ -83,7 +84,7 @@ class AsOfTest extends TestCase
         $this->assertEquals($deletedAt, $post->fieldAsOf('deleted_at', now()->subDay(), 'fallback'));
     }
 
-    /** @test */
+    #[Test]
     public function date_before_restore_without_update_row_returns_unknown()
     {
         $post = $this->postWithoutHistory();
@@ -99,7 +100,7 @@ class AsOfTest extends TestCase
         $this->assertEquals('fallback', $post->fieldAsOf('deleted_at', now()->subDay(), 'fallback'));
     }
 
-    /** @test */
+    #[Test]
     public function date_before_soft_delete_returns_null()
     {
         $post = $this->postWithoutHistory();
@@ -108,7 +109,7 @@ class AsOfTest extends TestCase
         $this->assertNull($post->fieldAsOf('deleted_at', now()->subDay(), 'fallback'));
     }
 
-    /** @test */
+    #[Test]
     public function date_between_rows_returns_earlier_rows_new_value()
     {
         $post = $this->postWithoutHistory();
@@ -118,7 +119,7 @@ class AsOfTest extends TestCase
         $this->assertEquals('second', $post->fieldAsOf('title', Carbon::parse('2020-01-15'), 'fallback'));
     }
 
-    /** @test */
+    #[Test]
     public function row_with_null_new_value_at_or_before_date_returns_null()
     {
         $post = $this->postWithoutHistory();
@@ -128,7 +129,7 @@ class AsOfTest extends TestCase
         $this->assertNull($post->fieldAsOf('title', Carbon::parse('2020-01-15'), 'fallback'));
     }
 
-    /** @test */
+    #[Test]
     public function no_rows_returns_unknown()
     {
         $post = $this->postWithoutHistory();
@@ -138,7 +139,7 @@ class AsOfTest extends TestCase
         $this->assertEquals('fallback', $post->fieldAsOf('title', $date, 'fallback'));
     }
 
-    /** @test */
+    #[Test]
     public function ties_on_occurred_at_break_by_id()
     {
         $post = $this->postWithoutHistory();
@@ -149,7 +150,7 @@ class AsOfTest extends TestCase
         $this->assertEquals('first-old', $post->fieldAsOf('title', Carbon::parse('2020-01-09')));
     }
 
-    /** @test */
+    #[Test]
     public function asOf_matches_fieldAsOf_for_fields_with_only_later_rows()
     {
         $post = $this->postWithoutHistory();
@@ -165,7 +166,7 @@ class AsOfTest extends TestCase
         $this->assertEquals('2019-05-01 00:00:00', $asOf->posted_at);
     }
 
-    /** @test */
+    #[Test]
     public function asOf_keeps_current_value_for_unknown_fields()
     {
         $post = $this->postWithoutHistory();

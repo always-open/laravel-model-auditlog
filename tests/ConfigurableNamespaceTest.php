@@ -4,12 +4,13 @@ namespace AlwaysOpen\AuditLog\Tests;
 
 use AlwaysOpen\AuditLog\Tests\Fakes\Models\Post;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use PHPUnit\Framework\Attributes\Test;
 
 class ConfigurableNamespaceTest extends TestCase
 {
     use DatabaseTransactions;
 
-    /** @test */
+    #[Test]
     public function it_uses_configured_namespace_for_audit_log_model_name()
     {
         config(['model-auditlog.model_namespace' => 'App\\Models\\AuditLogs']);
@@ -18,7 +19,7 @@ class ConfigurableNamespaceTest extends TestCase
         $this->assertEquals('App\\Models\\AuditLogs\\PostAuditLog', $post->getAuditLogModelName());
     }
 
-    /** @test */
+    #[Test]
     public function it_uses_default_namespace_when_config_is_null()
     {
         config(['model-auditlog.model_namespace' => null]);
@@ -28,7 +29,7 @@ class ConfigurableNamespaceTest extends TestCase
         $this->assertEquals('AlwaysOpen\\AuditLog\\Tests\\Fakes\\Models\\PostAuditLog', $post->getAuditLogModelName());
     }
 
-    /** @test */
+    #[Test]
     public function command_uses_configured_namespace()
     {
         config(['model-auditlog.model_namespace' => 'App\\AuditLogs']);
@@ -39,7 +40,7 @@ class ConfigurableNamespaceTest extends TestCase
         $this->assertEquals('App\\AuditLogs', $command->getModelNamespace($post));
     }
 
-    /** @test */
+    #[Test]
     public function command_uses_default_namespace_when_config_is_null()
     {
         config(['model-auditlog.model_namespace' => null]);

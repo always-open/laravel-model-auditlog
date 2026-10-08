@@ -10,6 +10,7 @@ use AlwaysOpen\AuditLog\Tests\Fakes\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
+use PHPUnit\Framework\Attributes\Test;
 
 class MakeModelAuditLogTableTest extends TestCase
 {
@@ -23,7 +24,7 @@ class MakeModelAuditLogTableTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function it_fails_if_model_class_does_not_exist()
     {
         $this->artisan('make:model-auditlog', ['existing-model-class' => 'NonExistentModel'])
@@ -31,7 +32,7 @@ class MakeModelAuditLogTableTest extends TestCase
             ->expectsOutputToContain('Class NonExistentModel not found');
     }
 
-    /** @test */
+    #[Test]
     public function it_fails_if_model_does_not_use_auditloggable_trait()
     {
         $this->artisan('make:model-auditlog', ['existing-model-class' => NonAuditLoggable::class])
@@ -39,7 +40,7 @@ class MakeModelAuditLogTableTest extends TestCase
             ->expectsOutputToContain('does not use the AuditLoggable trait');
     }
 
-    /** @test */
+    #[Test]
     public function it_generates_model_and_migration_for_new_model()
     {
         $modelPath = Storage::disk('local')->path('Models');
@@ -63,7 +64,7 @@ class MakeModelAuditLogTableTest extends TestCase
         $this->assertStringContainsString('create_users_auditlog_table.php', $migrationFiles[0]->getFilename());
     }
 
-    /** @test */
+    #[Test]
     public function it_warns_and_asks_confirmation_if_audit_log_exists()
     {
         $modelPath = Storage::disk('local')->path('Models');
@@ -86,7 +87,7 @@ class MakeModelAuditLogTableTest extends TestCase
         $this->assertFalse(File::exists($modelPath . '/PostAuditLog.php'));
     }
 
-    /** @test */
+    #[Test]
     public function it_warns_and_asks_confirmation_if_audit_log_exists_for_parent_model()
     {
         $modelPath = Storage::disk('local')->path('Models');
@@ -108,7 +109,7 @@ class MakeModelAuditLogTableTest extends TestCase
         $this->assertFalse(File::exists($modelPath . '/PostAuditLog.php'));
     }
 
-    /** @test */
+    #[Test]
     public function it_proceeds_with_generation_if_user_confirms_existing_audit_log()
     {
         Carbon::setTestNow(Carbon::now());

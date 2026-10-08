@@ -9,26 +9,27 @@ use AlwaysOpen\AuditLog\Tests\Fakes\Models\IgnoredFieldsPost;
 use AlwaysOpen\AuditLog\Tests\Fakes\Models\NonSoftDeletePost;
 use AlwaysOpen\AuditLog\Tests\Fakes\Models\Post;
 use AlwaysOpen\AuditLog\Tests\Fakes\Models\PostAuditLog;
+use PHPUnit\Framework\Attributes\Test;
 
 class PostModelTest extends TestCase
 {
     use DatabaseTransactions;
 
-    /** @test */
+    #[Test]
     public function can_get_classname_of_auditlog_model()
     {
         $post = new Post();
         $this->assertEquals(PostAuditLog::class, $post->getAuditLogModelName());
     }
 
-    /** @test */
+    #[Test]
     public function can_get_instance_of_auditlog_model()
     {
         $post = new Post();
         $this->assertInstanceOf(PostAuditLog::class, $post->getAuditLogModelInstance());
     }
 
-    /** @test */
+    #[Test]
     public function creating_a_post_triggers_a_revision()
     {
         /** @var Post $post */
@@ -52,7 +53,7 @@ class PostModelTest extends TestCase
         $this->assertEquals('2019-04-05 12:00:00', $posted->field_value_new);
     }
 
-    /** @test */
+    #[Test]
     public function updating_a_post_triggers_a_revision()
     {
         /** @var Post $post */
@@ -73,7 +74,7 @@ class PostModelTest extends TestCase
         $this->assertEquals('My New Title', $title->field_value_new);
     }
 
-    /** @test */
+    #[Test]
     public function deleting_a_post_triggers_a_revision()
     {
         /** @var Post $post */
@@ -95,7 +96,7 @@ class PostModelTest extends TestCase
         $this->assertNotEmpty($last->field_value_new);
     }
 
-    /** @test */
+    #[Test]
     public function force_deleting_a_post_does_not_trigger_a_revision()
     {
         /** @var Post $post */
@@ -111,7 +112,7 @@ class PostModelTest extends TestCase
         $this->assertEquals(2, $post->auditLogs()->count());
     }
 
-    /** @test */
+    #[Test]
     public function deleting_a_non_soft_deleting_post_does_not_trigger_a_revision()
     {
         /** @var Post $post */
@@ -127,7 +128,7 @@ class PostModelTest extends TestCase
         $this->assertEquals(2, $post->auditLogs()->count());
     }
 
-    /** @test */
+    #[Test]
     public function restoring_a_post_triggers_a_revision()
     {
         /** @var Post $post */
@@ -151,7 +152,7 @@ class PostModelTest extends TestCase
         $this->assertNull($last->field_value_new);
     }
 
-    /** @test */
+    #[Test]
     public function fields_can_be_ignored()
     {
         /** @var Post $post */
@@ -167,7 +168,7 @@ class PostModelTest extends TestCase
         $this->assertEquals(1, $post->auditLogs()->count());
     }
 
-    /** @test */
+    #[Test]
     public function asOf_gets_correct_value()
     {
         $latestTitle = 'first';
