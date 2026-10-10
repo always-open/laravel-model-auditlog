@@ -12,7 +12,7 @@
     "require": {
         "php": ">=8.2",
         "awobaz/compoships": "^2.0.3",
-        "fico7489/laravel-pivot": "^3.0.1",
+        "always-open/laravel-pivot": "^4.0",
         "laravel/framework": "^12.0|^13.0",
         "always-open/laravel-process-stamps": "^8.0|^9.0"
     },
