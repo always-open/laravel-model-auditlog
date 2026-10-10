@@ -4,6 +4,8 @@ namespace AlwaysOpen\AuditLog\Tests;
 
 use AlwaysOpen\AuditLog\Tests\Fakes\Models\Post;
 use AlwaysOpen\AuditLog\Tests\Fakes\Models\PostAuditLog;
+use AlwaysOpen\AuditLog\Tests\Fakes\Models\Tag;
+use AlwaysOpen\AuditLog\Tests\Fakes\Models\TagAuditLog;
 use AlwaysOpen\AuditLog\Tests\Fakes\Models\AuditLogs\PostAuditLog AS CustomNamespacePostAuditLog;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use PHPUnit\Framework\Attributes\Test;
@@ -38,9 +40,14 @@ class BaseModelTest extends TestCase
         $this->assertEquals(Post::class, $auditLog->getSubjectModelClassname());
 
         config(['model-auditlog.model_suffix' => 'Log']);
-        // If suffix is Log, then AlwaysOpen\AuditLog\Tests\Fakes\Models\PostAuditLog
-        // should become AlwaysOpen\AuditLog\Tests\Fakes\Models\PostAudit
-        $this->assertEquals('AlwaysOpen\AuditLog\Tests\Fakes\Models\PostAudit', $auditLog->getSubjectModelClassname());
+        // An explicit $auditLoggableModel wins over the suffix
+        $this->assertEquals(Post::class, $auditLog->getSubjectModelClassname());
+
+        // Without one, the suffix is stripped from the audit log class name
+        $this->assertEquals('AlwaysOpen\AuditLog\Tests\Fakes\Models\TagAudit', (new TagAuditLog())->getSubjectModelClassname());
+
+        config(['model-auditlog.model_suffix' => 'AuditLog']);
+        $this->assertEquals(Tag::class, (new TagAuditLog())->getSubjectModelClassname());
     }
 
     #[Test]

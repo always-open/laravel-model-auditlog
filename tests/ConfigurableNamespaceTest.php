@@ -37,7 +37,7 @@ class ConfigurableNamespaceTest extends TestCase
         $command = new \AlwaysOpen\AuditLog\Console\Commands\MakeModelAuditLogTable();
         $post = new Post();
 
-        $this->assertEquals('App\\AuditLogs', $command->getModelNamespace($post));
+        $this->assertEquals('App\\AuditLogs', $command->generateModelNamespace($post));
     }
 
     #[Test]
@@ -48,6 +48,6 @@ class ConfigurableNamespaceTest extends TestCase
         $command = new \AlwaysOpen\AuditLog\Console\Commands\MakeModelAuditLogTable();
         $post = new Post();
 
-        $this->assertEquals('AlwaysOpen\\AuditLog\\Tests\\Fakes\\Models', $command->getModelNamespace($post));
+        $this->assertEquals('AlwaysOpen\\AuditLog\\Tests\\Fakes\\Models', $command->generateModelNamespace($post));
     }
 }

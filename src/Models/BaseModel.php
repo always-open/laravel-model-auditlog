@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 use AlwaysOpen\AuditLog\EventType;
 
 /**
@@ -173,7 +174,7 @@ abstract class BaseModel extends Model
     public function getSubjectModelClassname(): string
     {
         return $this->auditLoggableModel ??
-            str_replace(config('model-auditlog.model_suffix'), '', get_class($this));
+            Str::replaceEnd(config('model-auditlog.model_suffix'), '', get_class($this));
     }
 
     /**
