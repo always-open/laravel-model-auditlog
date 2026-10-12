@@ -11,7 +11,7 @@ class InheritanceTest extends TestCase
 {
     use DatabaseTransactions;
 
-    /** @test */
+    #[Test]
     public function it_uses_child_audit_log_model_when_child_has_its_own_table()
     {
         $customPost = new CustomPost();
@@ -22,7 +22,7 @@ class InheritanceTest extends TestCase
         );
     }
 
-    /** @test */
+    #[Test]
     public function it_uses_parent_audit_log_model_when_child_uses_parent_table()
     {
         $extendedPost = new SubClassOfPosts();
@@ -33,7 +33,7 @@ class InheritanceTest extends TestCase
         );
     }
 
-    /** @test */
+    #[Test]
     public function it_uses_child_audit_log_table_when_child_has_its_own_table()
     {
         $customPost = new CustomPost();
@@ -44,7 +44,7 @@ class InheritanceTest extends TestCase
         );
     }
 
-    /** @test */
+    #[Test]
     public function it_calculates_child_audit_log_table_when_child_uses_parent_table()
     {
         $extendedPost = new SubClassOfPosts();

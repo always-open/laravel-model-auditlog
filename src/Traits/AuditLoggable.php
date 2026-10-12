@@ -16,11 +16,12 @@ trait AuditLoggable
     public const AUDIT_EVENT_RESTORED = 'restored';
 
     /**
-     * Boots the trait and sets the observer.
+     * Boots the trait and sets the observer once the model has booted,
+     * since observe() instantiates the model.
      */
     public static function bootAuditLoggable(): void
     {
-        static::observe(AuditLogObserver::class);
+        static::whenBooted(fn () => static::observe(AuditLogObserver::class));
     }
 
     /**

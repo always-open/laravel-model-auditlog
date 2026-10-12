@@ -3,16 +3,17 @@
 namespace AlwaysOpen\AuditLog\Tests;
 
 use Illuminate\Support\Facades\Schema;
+use PHPUnit\Framework\Attributes\Test;
 
 class DatabaseTest extends TestCase
 {
-    /** @test */
+    #[Test]
     public function posts_table_exists()
     {
         $this->assertTrue(Schema::hasTable('posts'));
     }
 
-    /** @test */
+    #[Test]
     public function posts_auditlog_table_exists()
     {
         $this->assertTrue(Schema::hasTable('posts_auditlog'));

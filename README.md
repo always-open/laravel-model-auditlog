@@ -108,7 +108,7 @@ Side note: if a column shares the same name in the pivot and a column already in
 
 The two models that are joined by the pivot will need to be updated so that events fire on the pivot model. Currently, a third-party package is required because Laravel doesn't support pivot model events.
 ```php
-composer require fico7489/laravel-pivot
+composer require always-open/laravel-pivot
 ```
 
 Have both models use the PivotEventTrait

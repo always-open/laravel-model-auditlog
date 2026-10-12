@@ -8,26 +8,27 @@ use AlwaysOpen\AuditLog\Tests\Fakes\Models\Post;
 use AlwaysOpen\AuditLog\Tests\Fakes\Models\PostTag;
 use AlwaysOpen\AuditLog\Tests\Fakes\Models\PostTagAuditLog;
 use AlwaysOpen\AuditLog\Tests\Fakes\Models\Tag;
+use PHPUnit\Framework\Attributes\Test;
 
 class PostTagModelTest extends TestCase
 {
     use DatabaseTransactions;
 
-    /** @test */
+    #[Test]
     public function can_get_classname_of_auditlog_model()
     {
         $tag_post = new PostTag();
         $this->assertEquals(PostTagAuditLog::class, $tag_post->getAuditLogModelName());
     }
 
-    /** @test */
+    #[Test]
     public function can_get_instance_of_auditlog_model()
     {
         $tag_post = new PostTag();
         $this->assertInstanceOf(PostTagAuditLog::class, $tag_post->getAuditLogModelInstance());
     }
 
-    /** @test */
+    #[Test]
     public function creating_a_post_tag_triggers_a_revision()
     {
         /** @var Tag $tag */
@@ -59,7 +60,7 @@ class PostTagModelTest extends TestCase
         $this->assertEquals(1, $tagged->field_value_new);
     }
 
-    /** @test */
+    #[Test]
     public function syncing_triggers_a_revision()
     {
         $tag1 = Tag::create([
@@ -99,7 +100,7 @@ class PostTagModelTest extends TestCase
         $this->assertEquals(0, PostTag::where('post_id', 1)->where('tag_id', 1)->count());
     }
 
-    /** @test */
+    #[Test]
     public function deleting_a_post_tag_does_not_trigger_a_revision()
     {
         $tag1 = Tag::create([
